@@ -1,0 +1,17 @@
+# Prisma AIRS Red Teaming - Python Dependencies
+
+# AI Runtime Security SDK (for testing Runtime Security with Red Teaming)
+pan-aisecurity>=0.6.1a2
+
+# Web framework for test application
+flask>=3.0.0
+
+# HTTP requests
+requests>=2.31.0
+
+# Optional: Real LLM for testing
+# openai>=1.3.0
+# anthropic>=0.7.0
+
+# Environment variables
+python-dotenv>=1.0.0
