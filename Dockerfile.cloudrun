@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application
-COPY runtime_test_app_streaming.py .
+COPY runtime_test_app_streaming_cloudrun.py .
 
 # Cloud Run expects the app to listen on $PORT
 ENV PORT=8080
@@ -17,4 +17,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Run the streaming app
-CMD python runtime_test_app_streaming.py
+CMD python runtime_test_app_streaming_cloudrun.py
