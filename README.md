@@ -332,7 +332,6 @@ team-shared-setup/
 │
 ├── Documentation
 ├── DOCKER_README.md                       # Complete Docker guide
-├── STREAMING_GUIDE.md                     # Streaming implementation details
 ├── CLOUDRUN_DEPLOYMENT.md                 # Full Cloud Run guide
 ├── CLOUDRUN_QUICKSTART.md                 # 5-minute Cloud Run setup
 │
@@ -401,23 +400,12 @@ Shows every request Red Teaming sends with full details.
 - Implement rate limiting
 - Use short-lived credentials
 
-## Streaming Support
-
-Streaming is available but experimental. See **[STREAMING_GUIDE.md](STREAMING_GUIDE.md)** for:
-- Known Red Teaming compatibility issues
-- 4 streaming format options
-- Troubleshooting streaming errors
-- When to use REST vs streaming
-
-**Current status:** Use REST API mode for production Red Teaming scans.
-
 ## Support and Resources
 
 **Documentation:**
 - [Runtime Security API Reference](https://pan.dev/prisma-airs/api/airuntimesecurity/)
 - [Red Teaming Documentation](https://docs.paloaltonetworks.com/prisma/airs/red-teaming)
 - [DOCKER_README.md](DOCKER_README.md) - Complete Docker setup guide
-- [STREAMING_GUIDE.md](STREAMING_GUIDE.md) - Streaming implementation details
 - [CLOUDRUN_DEPLOYMENT.md](CLOUDRUN_DEPLOYMENT.md) - Full Cloud Run deployment
 - [CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md) - 5-minute Cloud Run setup
 
