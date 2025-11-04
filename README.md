@@ -43,7 +43,7 @@ This package allows you to test **Prisma AIRS Runtime Security** effectiveness b
 1. **🐳 Docker with ngrok** - One command setup with automatic public URL
 2. **🐳 Docker without ngrok** - Simple containerization for local or VM deployment
 3. **☁️ Cloud Run** - Production deployment on GCP
-4. **💻 GCP VM** - Simple VM deployment when Cloud Run auth blocks Red Teaming
+4. **💻 Cloud VMs** - Simple VM deployment (GCP, Azure, or AWS) when Cloud Run auth blocks Red Teaming
 5. **🐍 Manual Setup** - Traditional Python virtualenv
 
 ### Option 1: Docker Quick Start (Recommended)
@@ -113,9 +113,11 @@ See **[CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md)** for details.
 
 **⚠️ Authentication Issue:** If your organization's Cloud Run policies require authentication (blocking Red Teaming access), use the GCP VM option below instead.
 
-### Option 2b: GCP VM Deployment (When Cloud Run Auth Blocks Red Teaming)
+### Option 2b: Cloud VM Deployment (When Cloud Run Auth Blocks Red Teaming)
 
-If Cloud Run's authentication restrictions prevent Red Teaming from accessing your endpoint, deploy to a simple GCP VM with an open firewall instead:
+If Cloud Run's authentication restrictions prevent Red Teaming from accessing your endpoint, deploy to a simple VM with an open firewall instead.
+
+**GCP VM:**
 
 **5-minute setup:**
 ```bash
@@ -150,6 +152,32 @@ Returns a public HTTP endpoint (e.g., `http://34.59.8.94:5000`) for Red Teaming.
 See **[GCP_VM_DEPLOYMENT.md](GCP_VM_DEPLOYMENT.md)** for complete deployment guide.
 
 **💰 Cost:** Free tier eligible (e2-micro in select regions). Otherwise ~$7/month if left running 24/7.
+
+**Azure VM:**
+
+```bash
+# Create VM, open firewall, deploy app
+# See AZURE_VM_DEPLOYMENT.md for complete steps
+```
+
+Returns a public HTTP endpoint for Red Teaming.
+
+See **[AZURE_VM_DEPLOYMENT.md](AZURE_VM_DEPLOYMENT.md)** for complete deployment guide.
+
+**💰 Cost:** ~$8/month (Standard_B1s) if left running 24/7.
+
+**AWS EC2:**
+
+```bash
+# Launch instance, configure security group, deploy app
+# See AWS_VM_DEPLOYMENT.md for complete steps
+```
+
+Returns a public HTTP endpoint for Red Teaming.
+
+See **[AWS_VM_DEPLOYMENT.md](AWS_VM_DEPLOYMENT.md)** for complete deployment guide.
+
+**💰 Cost:** Free tier eligible (t3.micro for first 12 months). Otherwise ~$8/month if left running 24/7.
 
 ### Option 3: Manual Python Setup
 
@@ -398,7 +426,9 @@ team-shared-setup/
 ├── DOCKER_SIMPLE.md                       # Simple Docker guide (no ngrok)
 ├── CLOUDRUN_DEPLOYMENT.md                 # Full Cloud Run guide
 ├── CLOUDRUN_QUICKSTART.md                 # 5-minute Cloud Run setup
-├── GCP_VM_DEPLOYMENT.md                   # GCP VM deployment (Cloud Run alternative)
+├── GCP_VM_DEPLOYMENT.md                   # GCP VM deployment
+├── AZURE_VM_DEPLOYMENT.md                 # Azure VM deployment
+├── AWS_VM_DEPLOYMENT.md                   # AWS EC2 deployment
 │
 ├── Configuration
 ├── requirements.txt                       # Python dependencies
@@ -474,7 +504,9 @@ Shows every request Red Teaming sends with full details.
 - [DOCKER_SIMPLE.md](DOCKER_SIMPLE.md) - Simple Docker guide (no ngrok, for local/VM)
 - [CLOUDRUN_DEPLOYMENT.md](CLOUDRUN_DEPLOYMENT.md) - Full Cloud Run deployment
 - [CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md) - 5-minute Cloud Run setup
-- [GCP_VM_DEPLOYMENT.md](GCP_VM_DEPLOYMENT.md) - GCP VM deployment (when Cloud Run auth blocks Red Teaming)
+- [GCP_VM_DEPLOYMENT.md](GCP_VM_DEPLOYMENT.md) - GCP VM deployment
+- [AZURE_VM_DEPLOYMENT.md](AZURE_VM_DEPLOYMENT.md) - Azure VM deployment
+- [AWS_VM_DEPLOYMENT.md](AWS_VM_DEPLOYMENT.md) - AWS EC2 deployment
 
 **Need Help?**
 - Review documentation files above
