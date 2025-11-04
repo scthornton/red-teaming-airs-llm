@@ -7,7 +7,7 @@ These are actual requests from the Red Teaming scan showing that **streaming is 
 ✅ **All requests show:** `🔄 Streaming: True (format: openai)`
 ✅ **All responses return:** `HTTP 200` status codes
 ✅ **Stream initiates with:** `📡 Starting openai stream...`
-✅ **No 502 errors or read() failures** (unlike Calvin's reported issues)
+✅ **No 502 errors or read() failures**
 
 ---
 
@@ -247,6 +247,6 @@ headers = {
 
 **Streaming works flawlessly from GCP VM deployment.**
 
-The issues Calvin reported (502 errors, read() errors) are **not present** when using the VM deployment approach. All streaming requests complete successfully with HTTP 200, content is delivered in chunks via SSE, and Runtime Security successfully scans and blocks malicious content while allowing benign requests through.
+All streaming requests complete successfully with HTTP 200, content is delivered in chunks via SSE, and Runtime Security successfully scans and blocks malicious content while allowing benign requests through.
 
 The GCP VM approach provides a reliable, production-ready method for testing AI Runtime Security with Red Teaming when Cloud Run authentication restrictions prevent direct access.
