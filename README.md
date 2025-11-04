@@ -38,11 +38,13 @@ This package allows you to test **Prisma AIRS Runtime Security** effectiveness b
 
 ## Quick Start
 
-**Three deployment options:**
+**Deployment options:**
 
-1. **🐳 Docker (Recommended)** - One command, fully containerized
-2. **☁️ Cloud Run** - Production deployment on GCP
-3. **🐍 Manual Setup** - Traditional Python virtualenv
+1. **🐳 Docker with ngrok** - One command setup with automatic public URL
+2. **🐳 Docker without ngrok** - Simple containerization for local or VM deployment
+3. **☁️ Cloud Run** - Production deployment on GCP
+4. **💻 GCP VM** - Simple VM deployment when Cloud Run auth blocks Red Teaming
+5. **🐍 Manual Setup** - Traditional Python virtualenv
 
 ### Option 1: Docker Quick Start (Recommended)
 
@@ -71,6 +73,24 @@ That's it! The container:
 - Provides ngrok web UI at http://localhost:4040
 
 See **[DOCKER_README.md](DOCKER_README.md)** for complete Docker documentation.
+
+### Option 1b: Docker Without ngrok
+
+Simple Docker setup without ngrok - useful for local development or deploying to a VM.
+
+**Local development:**
+```bash
+# 1. Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+
+# 2. Start container
+./docker-simple-start.sh
+```
+
+Access at http://localhost:5000 (local only, not accessible for Red Teaming).
+
+**Deploy to GCP VM:** See **[DOCKER_SIMPLE.md](DOCKER_SIMPLE.md)** for running Docker container on GCP VM with public IP.
 
 ### Option 2: Cloud Run Deployment
 
@@ -355,10 +375,13 @@ team-shared-setup/
 ├── runtime_test_app.py                   # Original test app
 │
 ├── Docker Setup
-├── Dockerfile                             # Local development container
+├── Dockerfile                             # Local development container (with ngrok)
+├── Dockerfile.simple                      # Simple container (no ngrok)
 ├── Dockerfile.cloudrun                    # Cloud Run container
-├── docker-compose.yml                     # Docker Compose config
-├── docker-quickstart.sh                   # One-command Docker start
+├── docker-compose.yml                     # Docker Compose config (with ngrok)
+├── docker-compose.simple.yml              # Simple compose (no ngrok)
+├── docker-quickstart.sh                   # One-command Docker start (with ngrok)
+├── docker-simple-start.sh                 # Simple Docker start (no ngrok)
 ├── start-docker.sh                        # Container startup script
 ├── .dockerignore                          # Docker build exclusions
 │
@@ -371,7 +394,8 @@ team-shared-setup/
 ├── start_test_app.sh                      # Start application
 │
 ├── Documentation
-├── DOCKER_README.md                       # Complete Docker guide
+├── DOCKER_README.md                       # Complete Docker guide (with ngrok)
+├── DOCKER_SIMPLE.md                       # Simple Docker guide (no ngrok)
 ├── CLOUDRUN_DEPLOYMENT.md                 # Full Cloud Run guide
 ├── CLOUDRUN_QUICKSTART.md                 # 5-minute Cloud Run setup
 ├── GCP_VM_DEPLOYMENT.md                   # GCP VM deployment (Cloud Run alternative)
@@ -446,7 +470,8 @@ Shows every request Red Teaming sends with full details.
 **Documentation:**
 - [Runtime Security API Reference](https://pan.dev/prisma-airs/api/airuntimesecurity/)
 - [Red Teaming Documentation](https://docs.paloaltonetworks.com/prisma/airs/red-teaming)
-- [DOCKER_README.md](DOCKER_README.md) - Complete Docker setup guide
+- [DOCKER_README.md](DOCKER_README.md) - Complete Docker setup guide (with ngrok)
+- [DOCKER_SIMPLE.md](DOCKER_SIMPLE.md) - Simple Docker guide (no ngrok, for local/VM)
 - [CLOUDRUN_DEPLOYMENT.md](CLOUDRUN_DEPLOYMENT.md) - Full Cloud Run deployment
 - [CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md) - 5-minute Cloud Run setup
 - [GCP_VM_DEPLOYMENT.md](GCP_VM_DEPLOYMENT.md) - GCP VM deployment (when Cloud Run auth blocks Red Teaming)
