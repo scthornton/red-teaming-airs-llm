@@ -2,8 +2,6 @@
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Security](https://img.shields.io/badge/Security-Policy-red.svg)](SECURITY.md)
 
 This package allows you to test **Prisma AIRS Runtime Security** effectiveness by using **AI Red Teaming** to attack a protected test application.
 
@@ -40,7 +38,62 @@ This package allows you to test **Prisma AIRS Runtime Security** effectiveness b
 
 ## Quick Start
 
-### 1. Install Dependencies
+**Three deployment options:**
+
+1. **🐳 Docker (Recommended)** - One command, fully containerized
+2. **☁️ Cloud Run** - Production deployment on GCP
+3. **🐍 Manual Setup** - Traditional Python virtualenv
+
+### Option 1: Docker Quick Start (Recommended)
+
+**Prerequisites:**
+- Docker Desktop installed and running
+- ngrok account (free) from https://ngrok.com
+
+**One-command setup:**
+```bash
+# 1. Copy environment template
+cp .env.example .env
+
+# 2. Edit .env with your credentials:
+#    - PANW_AI_SEC_API_KEY
+#    - NGROK_AUTHTOKEN
+#    - PRISMA_AIRS_PROFILE
+
+# 3. Start everything
+./docker-quickstart.sh
+```
+
+That's it! The container:
+- Starts Flask app on port 5000
+- Configures and starts ngrok tunnel
+- Shows your public HTTPS URL
+- Provides ngrok web UI at http://localhost:4040
+
+See **[DOCKER_README.md](DOCKER_README.md)** for complete Docker documentation.
+
+### Option 2: Cloud Run Deployment
+
+Deploy to Google Cloud for production-like testing without ngrok:
+
+**5-minute setup:**
+```bash
+# 1. Copy Cloud Run environment template
+cp .env.cloudrun.example .env.cloudrun
+
+# 2. Edit with your GCP project ID and API key
+
+# 3. Deploy
+./deploy-to-cloudrun.sh
+```
+
+Returns a permanent HTTPS URL for Red Teaming configuration.
+
+See **[CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md)** for details.
+
+### Option 3: Manual Python Setup
+
+**1. Install Dependencies**
 
 ```bash
 ./setup.sh
@@ -48,15 +101,14 @@ This package allows you to test **Prisma AIRS Runtime Security** effectiveness b
 
 This creates a Python virtual environment and installs required packages.
 
-### 2. Configure Credentials
+**2. Configure Credentials**
 
-**Option A: Environment Variables**
 ```bash
 export PANW_AI_SEC_API_KEY="your-runtime-security-api-key"
 export PRISMA_AIRS_PROFILE="your-security-profile-name"
 ```
 
-**Option B: .env File**
+Or create .env file:
 ```bash
 cp .env.example .env
 # Edit .env with your credentials
@@ -67,65 +119,53 @@ cp .env.example .env
 - Navigate to: **Settings → Prisma AIRS → Runtime Security**
 - Copy your API Key and Security Profile name
 
-### 3. Start Test Application
+**3. Start Test Application**
 
 ```bash
 ./start_test_app.sh
 ```
 
-You should see:
-```
-🔒 Starting Runtime Security Test App
-============================================================
-Security Profile: your-profile-name
-API Key: abc123...
-============================================================
+**4. Expose with ngrok** (in new terminal):
 
-🚀 Starting server on http://localhost:5000
-```
-
-### 4. Expose to Internet with ngrok
-
-Red Teaming runs in Palo Alto's cloud and can't reach localhost. Use ngrok to create a secure tunnel.
-
-**Install ngrok:**
-```bash
-brew install ngrok
-# Or download from https://ngrok.com/download
-```
-
-**Start tunnel (in new terminal):**
 ```bash
 ngrok http 5000
 ```
 
-**Copy the HTTPS URL shown:**
-```
-Forwarding  https://abc123def456.ngrok-free.app -> http://localhost:5000
-```
+Copy the HTTPS URL shown.
 
-### 5. Test Locally First
+## Configuring Red Teaming Target
+
+### Method 1: cURL Import (Recommended)
+
+**Why this works:** Red Teaming's cURL import parser works best with:
+- Single-line JSON (no line breaks)
+- Minimal headers (just Content-Type)
+- Standard short flags (-X, -H, -d)
+
+**Copy this exact format:**
 
 ```bash
-# Replace with your ngrok URL
-curl https://abc123def456.ngrok-free.app/health
+curl -X POST https://YOUR-NGROK-URL.ngrok-free.dev/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}'
 ```
 
-Expected response:
-```json
-{
-  "status": "healthy",
-  "runtime_security": "enabled (direct API)",
-  "profile": "your-profile-name",
-  "llm": "mock"
-}
-```
-
-### 6. Add as Red Teaming Target
+**To configure in Red Teaming:**
 
 1. Log into [Strata Cloud Manager](https://strata.paloaltonetworks.com)
 2. Navigate to: **Insights → Prisma AIRS → Red Teaming → Targets**
 3. Click **+ New Target**
+4. Choose **Import from cURL**
+5. Paste the cURL command above (with your actual ngrok URL)
+6. Click **Import**
+
+Done! The parser automatically extracts:
+- Endpoint URL
+- Headers
+- Request body format
+- Response structure
+
+### Method 2: Manual JSON Configuration
+
+If you prefer manual configuration:
 
 **Configure Target:**
 - **Name:** Runtime Security Test
@@ -133,33 +173,19 @@ Expected response:
 - **Connection Method:** REST API
 - **API Endpoint:** `https://YOUR-NGROK-URL.ngrok-free.app/v1/chat/completions`
 
-**Request JSON:**
+**Request JSON (compact format required):**
 ```json
-{
-  "messages": [
-    {
-      "role": "user",
-      "content": "{INPUT}"
-    }
-  ],
-  "model": "gpt-3.5-turbo"
-}
+{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}
 ```
 
 **Response JSON Path:**
 ```json
-{
-  "choices": [
-    {
-      "message": {
-        "content": "{RESPONSE}"
-      }
-    }
-  ]
-}
+{"choices":[{"message":{"content":"{RESPONSE}"}}]}
 ```
 
-### 7. Run Red Team Scan
+**⚠️ Common Issue:** Multi-line JSON with formatting causes "INVALID_API_HEADERS" error. Use compact format above.
+
+## Run Red Team Scan
 
 1. Navigate to: **Red Teaming → Scans**
 2. Click **+ New Scan**
@@ -173,7 +199,7 @@ Expected response:
    - OWASP Top 10 for LLMs
 6. Click **Start Scan**
 
-### 8. Monitor Results
+## Monitor Results
 
 **Watch your terminal running the test app:**
 ```
@@ -279,19 +305,41 @@ Should return a normal response, not blocked.
 
 ```plaintext
 team-shared-setup/
-├── README.md                      # This file
-├── LICENSE                        # MIT License
-├── CONTRIBUTING.md                # Contribution guidelines
-├── SECURITY.md                    # Security policy
-├── CODE_OF_CONDUCT.md            # Code of conduct
-├── setup.sh                       # Setup script
-├── start_test_app.sh             # Start application
-├── runtime_test_app.py           # Flask test application
-├── requirements.txt               # Python dependencies
-├── .env.example                  # Example credentials file
-├── .gitignore                    # Git ignore rules
-├── EXPOSING_LOCALHOST.md         # Detailed ngrok guide
-└── TESTING_RUNTIME_SECURITY.md   # Comprehensive testing guide
+├── README.md                              # This file
+├── LICENSE                                # MIT License
+│
+├── Core Applications
+├── runtime_test_app_direct_api.py        # Direct API integration (no SDK)
+├── runtime_test_app_streaming.py         # Streaming support (4 formats)
+├── runtime_test_app_streaming_cloudrun.py # Cloud Run optimized version
+├── runtime_test_app.py                   # Original test app
+│
+├── Docker Setup
+├── Dockerfile                             # Local development container
+├── Dockerfile.cloudrun                    # Cloud Run container
+├── docker-compose.yml                     # Docker Compose config
+├── docker-quickstart.sh                   # One-command Docker start
+├── start-docker.sh                        # Container startup script
+├── .dockerignore                          # Docker build exclusions
+│
+├── Cloud Deployment
+├── deploy-to-cloudrun.sh                  # GCP deployment script
+├── .env.cloudrun.example                  # Cloud Run environment template
+│
+├── Manual Setup Scripts
+├── setup.sh                               # Python virtualenv setup
+├── start_test_app.sh                      # Start application
+│
+├── Documentation
+├── DOCKER_README.md                       # Complete Docker guide
+├── STREAMING_GUIDE.md                     # Streaming implementation details
+├── CLOUDRUN_DEPLOYMENT.md                 # Full Cloud Run guide
+├── CLOUDRUN_QUICKSTART.md                 # 5-minute Cloud Run setup
+│
+├── Configuration
+├── requirements.txt                       # Python dependencies
+├── .env.example                          # Environment variables template
+└── .gitignore                            # Git ignore rules
 ```
 
 ## Advanced Usage
@@ -353,17 +401,30 @@ Shows every request Red Teaming sends with full details.
 - Implement rate limiting
 - Use short-lived credentials
 
+## Streaming Support
+
+Streaming is available but experimental. See **[STREAMING_GUIDE.md](STREAMING_GUIDE.md)** for:
+- Known Red Teaming compatibility issues
+- 4 streaming format options
+- Troubleshooting streaming errors
+- When to use REST vs streaming
+
+**Current status:** Use REST API mode for production Red Teaming scans.
+
 ## Support and Resources
 
 **Documentation:**
 - [Runtime Security API Reference](https://pan.dev/prisma-airs/api/airuntimesecurity/)
-- [Python SDK Usage Guide](https://pan.dev/prisma-airs/api/airuntimesecurity/pythonsdkusage/)
 - [Red Teaming Documentation](https://docs.paloaltonetworks.com/prisma/airs/red-teaming)
+- [DOCKER_README.md](DOCKER_README.md) - Complete Docker setup guide
+- [STREAMING_GUIDE.md](STREAMING_GUIDE.md) - Streaming implementation details
+- [CLOUDRUN_DEPLOYMENT.md](CLOUDRUN_DEPLOYMENT.md) - Full Cloud Run deployment
+- [CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md) - 5-minute Cloud Run setup
 
 **Need Help?**
-- Check `EXPOSING_LOCALHOST.md` for detailed ngrok setup
-- Review `TESTING_RUNTIME_SECURITY.md` for comprehensive testing guide
+- Review documentation files above
 - Contact your Prisma AIRS support team
+- Open an issue on GitHub
 
 ## Next Steps
 
@@ -379,39 +440,12 @@ Shows every request Red Teaming sends with full details.
 
 **Summary:** This package validates that Prisma AIRS Runtime Security effectively protects your AI applications against real-world attacks simulated by AI Red Teaming.
 
-## Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## Security
-
-For security issues, please see our [Security Policy](SECURITY.md).
-
-## Code of Conduct
-
-This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you're expected to uphold this code.
-
 ## License
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+---
 
 **Created by:** Scott Thornton
 **Built for:** Prisma AIRS AI Security Platform by Palo Alto Networks
-
-### Special Thanks
-
-- Palo Alto Networks for the Prisma AIRS platform
-- Contributors and security researchers who help improve this tool
-- The AI security research community
-
-## Contact
-
-- **Author:** Scott Thornton
-- **General Questions:** Open a GitHub issue
-
----
-
 **© 2025 Scott Thornton** | Licensed under MIT
-# red-teaming-airs-llm

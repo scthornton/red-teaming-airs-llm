@@ -2,6 +2,7 @@
 .venv/
 venv/
 env/
+ENV/
 
 # Environment variables (contains secrets)
 .env
@@ -26,3 +27,12 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Large data files (don't commit to repo)
+*.csv
+*.pdf
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
