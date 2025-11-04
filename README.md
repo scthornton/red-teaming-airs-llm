@@ -91,6 +91,46 @@ Returns a permanent HTTPS URL for Red Teaming configuration.
 
 See **[CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md)** for details.
 
+**⚠️ Authentication Issue:** If your organization's Cloud Run policies require authentication (blocking Red Teaming access), use the GCP VM option below instead.
+
+### Option 2b: GCP VM Deployment (When Cloud Run Auth Blocks Red Teaming)
+
+If Cloud Run's authentication restrictions prevent Red Teaming from accessing your endpoint, deploy to a simple GCP VM with an open firewall instead:
+
+**5-minute setup:**
+```bash
+# 1. Create VM and configure firewall
+gcloud compute instances create prisma-airs-streaming-vm \
+  --project=YOUR-PROJECT-ID \
+  --zone=us-central1-a \
+  --machine-type=e2-micro \
+  --image-family=debian-12 \
+  --image-project=debian-cloud \
+  --boot-disk-size=10GB \
+  --tags=http-server,https-server
+
+# 2. Open firewall for port 5000
+gcloud compute firewall-rules create allow-prisma-airs-app \
+  --project=YOUR-PROJECT-ID \
+  --allow=tcp:5000 \
+  --source-ranges=0.0.0.0/0 \
+  --target-tags=http-server,https-server
+
+# 3. Copy app files and deploy
+# (See GCP_VM_DEPLOYMENT.md for complete steps)
+```
+
+Returns a public HTTP endpoint (e.g., `http://34.59.8.94:5000`) for Red Teaming.
+
+**When to use this:**
+- Cloud Run requires authentication your org won't disable
+- You need a publicly accessible endpoint for Red Teaming
+- You want a simple VM-based deployment
+
+See **[GCP_VM_DEPLOYMENT.md](GCP_VM_DEPLOYMENT.md)** for complete deployment guide.
+
+**💰 Cost:** Free tier eligible (e2-micro in select regions). Otherwise ~$7/month if left running 24/7.
+
 ### Option 3: Manual Python Setup
 
 **1. Install Dependencies**
@@ -334,6 +374,7 @@ team-shared-setup/
 ├── DOCKER_README.md                       # Complete Docker guide
 ├── CLOUDRUN_DEPLOYMENT.md                 # Full Cloud Run guide
 ├── CLOUDRUN_QUICKSTART.md                 # 5-minute Cloud Run setup
+├── GCP_VM_DEPLOYMENT.md                   # GCP VM deployment (Cloud Run alternative)
 │
 ├── Configuration
 ├── requirements.txt                       # Python dependencies
@@ -408,6 +449,7 @@ Shows every request Red Teaming sends with full details.
 - [DOCKER_README.md](DOCKER_README.md) - Complete Docker setup guide
 - [CLOUDRUN_DEPLOYMENT.md](CLOUDRUN_DEPLOYMENT.md) - Full Cloud Run deployment
 - [CLOUDRUN_QUICKSTART.md](CLOUDRUN_QUICKSTART.md) - 5-minute Cloud Run setup
+- [GCP_VM_DEPLOYMENT.md](GCP_VM_DEPLOYMENT.md) - GCP VM deployment (when Cloud Run auth blocks Red Teaming)
 
 **Need Help?**
 - Review documentation files above
