@@ -23,6 +23,7 @@ PROFILE_NAME = os.getenv("PRISMA_AIRS_PROFILE", "ai-sec-security")
 RUNTIME_API_URL = "https://service.api.aisecurity.paloaltonetworks.com/v1/scan/sync/request"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 USE_REAL_LLM = bool(OPENAI_API_KEY)
+BLOCK_STATUS_CODE = int(os.getenv("BLOCK_STATUS_CODE", "200"))
 
 if not API_KEY:
     print("❌ ERROR: PANW_AI_SEC_API_KEY not set")
@@ -141,7 +142,7 @@ def chat_completions():
                     "completion_tokens": 15,
                     "total_tokens": len(user_prompt.split()) + 15
                 }
-            })
+            }), BLOCK_STATUS_CODE
 
         # Allow safe prompts - get LLM response
         print("✅ ALLOWED - Processing with LLM")

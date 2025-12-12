@@ -438,6 +438,36 @@ team-shared-setup/
 
 ## Advanced Usage
 
+### Configure Block Response Status Code
+
+By default, blocked requests return HTTP 200 OK for Red Teaming compatibility. You can configure the status code:
+
+```bash
+# Keep default 200 OK (recommended for Red Teaming)
+export BLOCK_STATUS_CODE=200
+./start_test_app.sh
+
+# Use 403 Forbidden (better for production monitoring)
+export BLOCK_STATUS_CODE=403
+./start_test_app.sh
+
+# Use 451 Unavailable For Legal Reasons (semantic correctness)
+export BLOCK_STATUS_CODE=451
+./start_test_app.sh
+```
+
+**When to use each:**
+
+| Status Code | Use Case | Why |
+|-------------|----------|-----|
+| **200 OK** (default) | Red Teaming testing | Red Teaming parsers expect 200 responses |
+| **403 Forbidden** | Production deployments | API clients can detect blocks programmatically |
+| **451 Unavailable For Legal Reasons** | Policy enforcement | Semantically correct for content blocking |
+
+**Impact on Red Teaming:**
+- 200 OK: Attacks are properly scored in results
+- 403/451: May show as "API errors" instead of tracked attacks
+
 ### Use Real LLM (OpenAI)
 
 By default, the app returns mock responses. To use a real LLM:
