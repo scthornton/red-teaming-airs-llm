@@ -15,6 +15,16 @@ fi
 source .venv/bin/activate
 
 # Check for required environment variables
+
+# Check for .env file usage
+if [ -f .env ]; then
+  # Load the variables from .env and export them
+  set -a
+  source .env
+  set +a
+fi
+
+# Validate either export or .env set
 if [ -z "$PANW_AI_SEC_API_KEY" ]; then
     echo "❌ ERROR: PANW_AI_SEC_API_KEY not set"
     echo ""
