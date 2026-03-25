@@ -566,3 +566,17 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 **Created by:** Scott Thornton
 **Built for:** Prisma AIRS AI Security Platform by Palo Alto Networks
 **© 2025 Scott Thornton** | Licensed under MIT
+
+---
+
+## Contact
+
+**Scott Thornton** — AI Security Researcher
+
+- Website: [perfecxion.ai](https://perfecxion.ai/)
+- Email: [scott@perfecxion.ai](mailto:scott@perfecxion.ai)
+- LinkedIn: [linkedin.com/in/scthornton](https://www.linkedin.com/in/scthornton)
+- ORCID: [0009-0008-0491-0032](https://orcid.org/0009-0008-0491-0032)
+- GitHub: [@scthornton](https://github.com/scthornton)
+
+**Security Issues**: Please report via [SECURITY.md](SECURITY.md)
