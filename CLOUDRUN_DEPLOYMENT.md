@@ -139,7 +139,7 @@ curl https://YOUR-URL.run.app/health
 ```bash
 curl -X POST https://YOUR-URL.run.app/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -d '{"messages":[{"role":"user","content":"Hello"}],"model":"gpt-3.5-turbo"}'
+  -d '{"messages":[{"role":"user","content":"Hello"}],"model":"gpt-4o-mini"}'
 ```
 
 ### 3. Test Streaming (OpenAI format)
@@ -147,7 +147,7 @@ curl -X POST https://YOUR-URL.run.app/v1/chat/completions \
 ```bash
 curl -N -X POST https://YOUR-URL.run.app/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -d '{"messages":[{"role":"user","content":"Hello"}],"model":"gpt-3.5-turbo","stream":true}'
+  -d '{"messages":[{"role":"user","content":"Hello"}],"model":"gpt-4o-mini","stream":true}'
 ```
 
 **Expected (streaming chunks):**
@@ -197,14 +197,14 @@ https://strata.paloaltonetworks.com
 
 **Use this cURL (replace YOUR-URL):**
 ```bash
-curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo","stream":true}'
+curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini","stream":true}'
 ```
 
 **For REST API (more reliable):**
 - **Connection Method:** REST API
 
 ```bash
-curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}'
+curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini"}'
 ```
 
 ### 4. Run Scan
@@ -376,12 +376,17 @@ gcloud run services delete prisma-airs-streaming --region us-central1
 
 ### Delete Container Images
 
-```bash
-# List images
-gcloud container images list
+Images live in Artifact Registry (Container Registry stopped accepting writes
+on 2025-03-18, so `gcloud container images ...` no longer applies here).
 
-# Delete specific image
-gcloud container images delete gcr.io/YOUR_PROJECT/prisma-airs-streaming
+```bash
+# List images in the repo
+gcloud artifacts docker images list \
+  us-central1-docker.pkg.dev/YOUR_PROJECT/prisma-airs
+
+# Delete a specific image
+gcloud artifacts docker images delete \
+  us-central1-docker.pkg.dev/YOUR_PROJECT/prisma-airs/prisma-airs-streaming
 ```
 
 ---

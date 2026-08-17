@@ -1,7 +1,9 @@
 # Prisma AIRS Red Teaming - Python Dependencies
 
-# AI Runtime Security SDK (for testing Runtime Security with Red Teaming)
-pan-aisecurity>=0.6.1a2
+# NOTE: pan-aisecurity (the AI Runtime Security SDK) is deliberately NOT listed.
+# Nothing in this repo imports it - every app calls the Scan API over plain HTTP
+# with `requests`. Keeping the pin only broke installs, because pan-aisecurity
+# requires Python >= 3.10 while this repo advertises 3.8+.
 
 # Web framework for test application
 flask>=3.0.0

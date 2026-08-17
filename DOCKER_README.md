@@ -125,7 +125,7 @@ Once your container is running:
 
 **Use this cURL command:**
 ```bash
-curl -X POST https://YOUR-NGROK-URL.ngrok-free.dev/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}'
+curl -X POST https://YOUR-NGROK-URL.ngrok-free.dev/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini"}'
 ```
 
 ---

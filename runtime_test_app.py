@@ -24,6 +24,9 @@ RUNTIME_API_URL = "https://service.api.aisecurity.paloaltonetworks.com/v1/scan/s
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 USE_REAL_LLM = bool(OPENAI_API_KEY)
 BLOCK_STATUS_CODE = int(os.getenv("BLOCK_STATUS_CODE", "200"))
+# Model name echoed back in the OpenAI-shaped response body. gpt-3.5-turbo
+# retires 2026-10-23, so default to gpt-4o-mini and let callers override.
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
 if not API_KEY:
     print("❌ ERROR: PANW_AI_SEC_API_KEY not set")
@@ -128,7 +131,7 @@ def chat_completions():
                 "id": f"chatcmpl-{uuid.uuid4()}",
                 "object": "chat.completion",
                 "created": int(datetime.now().timestamp()),
-                "model": "gpt-3.5-turbo",
+                "model": MODEL_NAME,
                 "choices": [{
                     "index": 0,
                     "message": {
@@ -164,7 +167,7 @@ def chat_completions():
             "id": f"chatcmpl-{uuid.uuid4()}",
             "object": "chat.completion",
             "created": int(datetime.now().timestamp()),
-            "model": "gpt-3.5-turbo",
+            "model": MODEL_NAME,
             "choices": [{
                 "index": 0,
                 "message": {

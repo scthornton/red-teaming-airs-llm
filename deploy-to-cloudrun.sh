@@ -8,10 +8,23 @@ echo "=================================================="
 echo ""
 
 # Configuration
+#
+# Images go to Artifact Registry, not Container Registry. Google shut off
+# gcr.io writes on 2025-03-18, so pushing to gcr.io/PROJECT/... fails on any
+# project that did not have legacy GCR grandfathered in.
+#
+# Create the Artifact Registry repo once, before the first deploy:
+#   gcloud artifacts repositories create prisma-airs \
+#     --repository-format=docker --location=us-central1
+#
+# We build explicitly (rather than `gcloud run deploy --source .`) because the
+# Cloud Run image is built from Dockerfile.cloudrun, while the Dockerfile at
+# the repo root is the ngrok/local variant that listens on port 5000.
 PROJECT_ID=${GCP_PROJECT_ID:-""}
 REGION=${GCP_REGION:-"us-central1"}
 SERVICE_NAME="prisma-airs-streaming"
-IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
+AR_REPO=${GCP_AR_REPO:-"prisma-airs"}
+IMAGE_NAME="${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/${SERVICE_NAME}:latest"
 
 # Check prerequisites
 if [ -z "$PROJECT_ID" ]; then
@@ -65,14 +78,31 @@ echo ""
 echo "🔧 Step 1: Building container image..."
 echo "=================================================="
 
-# Build and push using Cloud Build (recommended) or Docker
+# Make sure the Artifact Registry repo exists. Creating it is idempotent enough
+# here: we only create when the describe fails.
+if ! gcloud artifacts repositories describe "${AR_REPO}" \
+        --location "${REGION}" --project "${PROJECT_ID}" &> /dev/null; then
+    echo "Artifact Registry repo '${AR_REPO}' not found in ${REGION}, creating it..."
+    gcloud artifacts repositories create "${AR_REPO}" \
+        --repository-format=docker \
+        --location "${REGION}" \
+        --project "${PROJECT_ID}" \
+        --description "Prisma AIRS red teaming target images"
+fi
+
+# Build and push using Cloud Build (recommended) or Docker.
+# Both paths target Artifact Registry; gcr.io no longer accepts writes.
 if command -v docker &> /dev/null; then
     echo "Using Docker to build locally..."
+    gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
     docker build -f Dockerfile.cloudrun -t ${IMAGE_NAME} .
     docker push ${IMAGE_NAME}
 else
     echo "Using Cloud Build..."
-    gcloud builds submit --tag ${IMAGE_NAME} -f Dockerfile.cloudrun .
+    gcloud builds submit --config cloudbuild.yaml \
+        --project "${PROJECT_ID}" \
+        --substitutions "_REGION=${REGION},_AR_REPO=${AR_REPO},_IMAGE=${SERVICE_NAME},_TAG=latest" \
+        .
 fi
 
 echo ""
@@ -130,7 +160,7 @@ echo "🎯 Add to Red Teaming:"
 echo ""
 echo "Use this cURL command in SCM:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "curl -X POST ${SERVICE_URL}/v1/chat/completions -H \"Content-Type: application/json\" -d '{\"messages\":[{\"role\":\"user\",\"content\":\"{INPUT}\"}],\"model\":\"gpt-3.5-turbo\",\"stream\":true}'"
+echo "curl -X POST ${SERVICE_URL}/v1/chat/completions -H \"Content-Type: application/json\" -d '{\"messages\":[{\"role\":\"user\",\"content\":\"{INPUT}\"}],\"model\":\"gpt-4o-mini\",\"stream\":true}'"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "📊 View logs:"

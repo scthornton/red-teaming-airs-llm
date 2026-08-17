@@ -23,6 +23,9 @@ RUNTIME_API_URL = "https://service.api.aisecurity.paloaltonetworks.com/v1/scan/s
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 USE_REAL_LLM = bool(OPENAI_API_KEY)
 BLOCK_STATUS_CODE = int(os.getenv("BLOCK_STATUS_CODE", "200"))
+# Model name echoed back in the OpenAI-shaped response body. gpt-3.5-turbo
+# retires 2026-10-23, so default to gpt-4o-mini and let callers override.
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 PORT = int(os.getenv("PORT", 8080))  # Cloud Run uses PORT env var
 
 if not API_KEY:
@@ -87,7 +90,7 @@ def generate_openai_stream(content, chunk_size=10):
             "id": chunk_id,
             "object": "chat.completion.chunk",
             "created": int(datetime.now().timestamp()),
-            "model": "gpt-3.5-turbo",
+            "model": MODEL_NAME,
             "choices": [{
                 "index": 0,
                 "delta": {
@@ -104,7 +107,7 @@ def generate_openai_stream(content, chunk_size=10):
         "id": chunk_id,
         "object": "chat.completion.chunk",
         "created": int(datetime.now().timestamp()),
-        "model": "gpt-3.5-turbo",
+        "model": MODEL_NAME,
         "choices": [{
             "index": 0,
             "delta": {},
@@ -222,7 +225,7 @@ def chat_completions():
                     "id": f"chatcmpl-{uuid.uuid4()}",
                     "object": "chat.completion",
                     "created": int(datetime.now().timestamp()),
-                    "model": "gpt-3.5-turbo",
+                    "model": MODEL_NAME,
                     "choices": [{
                         "index": 0,
                         "message": {
@@ -280,7 +283,7 @@ def chat_completions():
                 "id": f"chatcmpl-{uuid.uuid4()}",
                 "object": "chat.completion",
                 "created": int(datetime.now().timestamp()),
-                "model": "gpt-3.5-turbo",
+                "model": MODEL_NAME,
                 "choices": [{
                     "index": 0,
                     "message": {

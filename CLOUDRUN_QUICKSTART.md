@@ -64,12 +64,12 @@ curl https://YOUR-URL.run.app/health
 
 **For streaming testing:**
 ```bash
-curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo","stream":true}'
+curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini","stream":true}'
 ```
 
 **For REST API (more reliable):**
 ```bash
-curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}'
+curl -X POST https://YOUR-URL.run.app/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini"}'
 ```
 
 Paste into SCM Red Teaming target cURL field.

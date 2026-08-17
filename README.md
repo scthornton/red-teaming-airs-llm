@@ -233,7 +233,7 @@ Copy the HTTPS URL shown.
 **Copy this exact format:**
 
 ```bash
-curl -X POST https://YOUR-NGROK-URL.ngrok-free.dev/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}'
+curl -X POST https://YOUR-NGROK-URL.ngrok-free.dev/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini"}'
 ```
 
 **To configure in Red Teaming:**
@@ -263,7 +263,7 @@ If you prefer manual configuration:
 
 **Request JSON (compact format required):**
 ```json
-{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo"}
+{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini"}
 ```
 
 **Response JSON Path:**
@@ -528,8 +528,8 @@ Shows every request Red Teaming sends with full details.
 ## Support and Resources
 
 **Documentation:**
-- [Runtime Security API Reference](https://pan.dev/prisma-airs/api/airuntimesecurity/)
-- [Red Teaming Documentation](https://docs.paloaltonetworks.com/prisma/airs/red-teaming)
+- [Runtime Scan API Reference](https://pan.dev/prisma-airs/api/airuntimesecurity/airuntimesecurityapi)
+- [Red Teaming API Reference](https://pan.dev/prisma-airs-redteam/api/ai-integration/introduction)
 - [DOCKER_README.md](DOCKER_README.md) - Complete Docker setup guide (with ngrok)
 - [DOCKER_SIMPLE.md](DOCKER_SIMPLE.md) - Simple Docker guide (no ngrok, for local/VM)
 - [CLOUDRUN_DEPLOYMENT.md](CLOUDRUN_DEPLOYMENT.md) - Full Cloud Run deployment

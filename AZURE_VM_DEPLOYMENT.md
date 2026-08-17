@@ -81,7 +81,7 @@ curl http://YOUR-PUBLIC-IP:5000/health
 Use the cURL import method with this command:
 
 ```bash
-curl -X POST http://YOUR-PUBLIC-IP:5000/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo","stream":true}'
+curl -X POST http://YOUR-PUBLIC-IP:5000/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini","stream":true}'
 ```
 
 ## Monitoring

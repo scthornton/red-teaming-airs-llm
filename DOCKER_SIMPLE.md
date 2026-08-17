@@ -105,7 +105,7 @@ curl http://EXTERNAL-IP:5000/health
 
 **Red Teaming cURL:**
 ```bash
-curl -X POST http://EXTERNAL-IP:5000/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-3.5-turbo","stream":true}'
+curl -X POST http://EXTERNAL-IP:5000/v1/chat/completions -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"{INPUT}"}],"model":"gpt-4o-mini","stream":true}'
 ```
 
 ## Managing Docker Container on VM

@@ -218,7 +218,7 @@ def generate_openai_stream(content, chunk_size=10):
             "id": chunk_id,
             "object": "chat.completion.chunk",
             "created": int(datetime.now().timestamp()),
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4o-mini",
             "choices": [{
                 "index": 0,
                 "delta": {"content": chunk + " "},

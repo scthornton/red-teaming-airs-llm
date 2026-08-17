@@ -1,5 +1,31 @@
+# Cloud Build config for the Cloud Run streaming app.
+#
+# Pushes to Artifact Registry. Container Registry (gcr.io) stopped accepting
+# writes on 2025-03-18, so a gcr.io destination fails on any project that has
+# not had legacy GCR grandfathered in.
+#
+# The Artifact Registry repo must exist before the first build:
+#   gcloud artifacts repositories create prisma-airs \
+#     --repository-format=docker --location=us-central1
+#
+# Build with your own project (no hardcoded project ID here):
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions=_REGION=us-central1,_AR_REPO=prisma-airs,_IMAGE=prisma-airs-streaming
+substitutions:
+  _REGION: us-central1
+  _AR_REPO: prisma-airs
+  _IMAGE: prisma-airs-streaming
+  _TAG: latest
+
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'Dockerfile.cloudrun', '-t', 'gcr.io/sthornton-df21/prisma-airs-streaming', '.']
+    args:
+      - 'build'
+      - '-f'
+      - 'Dockerfile.cloudrun'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_IMAGE}:${_TAG}'
+      - '.'
+
 images:
-  - 'gcr.io/sthornton-df21/prisma-airs-streaming'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_IMAGE}:${_TAG}'
